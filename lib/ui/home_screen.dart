@@ -1,9 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutterdeeplink/ui/next_screen.dart';
-import 'package:flutterdeeplink/utils/lieftcyle_watcher_state.dart';
+import 'package:flutterdeeplink/utils/console_utils.dart';
+import 'package:flutterdeeplink/utils/constants/app_constants.dart';
+import 'package:flutterdeeplink/utils/constants/dimens.dart';
+import 'package:flutterdeeplink/utils/dialog_utils.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,11 +16,19 @@ class HomeScreen extends StatefulWidget {
 
 StreamSubscription<Map> streamSubscriptionDeepLink;
 
-class _HomeScreenState extends LifecycleWatcherState<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
+  BranchUniversalObject buo;
+  BranchLinkProperties lp;
+  BranchResponse response;
+
   @override
   void initState() {
     super.initState();
     FlutterBranchSdk.validateSDKIntegration();
+    Future.delayed(Duration.zero, () {
+      listenDeepLinkData(context);
+    });
+    initializeDeepLinkData();
   }
 
   @override
@@ -25,85 +37,72 @@ class _HomeScreenState extends LifecycleWatcherState<HomeScreen> {
     streamSubscriptionDeepLink.cancel();
   }
 
-  void _generateDeepLink() async {
-    BranchUniversalObject buo = BranchUniversalObject(
-        canonicalIdentifier: 'flutter/branch',
-        title: 'Flutter Branch Plugin',
-        imageUrl:
-            'https://flutter.dev/assets/flutter-lockup-4cb0ee072ab312e59784d9fbf4fb7ad42688a7fdaea1270ccf6bbf4f34b7e03f.svg',
-        contentDescription: 'Flutter Branch Description',
-        keywords: ['Plugin', 'Branch', 'Flutter'],
-        publiclyIndex: true,
-        locallyIndex: true,
-        contentMetadata: BranchContentMetaData()
-          ..addCustomMetadata('custom_string', 'flutter deep link'));
-
-    BranchLinkProperties lp = BranchLinkProperties(
-        channel: 'facebook',
-        feature: 'sharing',
-        stage: 'new share',
-        tags: ['one', 'two', 'three']);
-    lp.addControlParam('url', 'http://www.google.com');
-    lp.addControlParam('url2', 'http://flutter.dev');
-
-    BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
-    if (response.success) {
-      print('Link generated: ${response.result}');
-    } else {
-      print('Error : ${response.errorCode} - ${response.errorMessage}');
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(AppConstants.homeScreenAppBarTitle),
+        ),
+        body: SafeArea(
+          child: Center(
+            child: RaisedButton(
+              color: Colors.blue,
+              onPressed: () {
+                _generateDeepLink(context);
+              },
+              child: Text(
+                AppConstants.branchIoDeepLink,
+                style: TextStyle(color: Colors.white, fontSize: headerFontSize),
+              ),
+            ),
+          ),
+        ));
   }
 
-  void listenDeepLink(BuildContext context) async {
+  //To Listen Generated Branch IO Link And Get Data From It
+  void listenDeepLinkData(BuildContext context) async {
     streamSubscriptionDeepLink = FlutterBranchSdk.initSession().listen((data) {
-      if (data.containsKey("+clicked_branch_link") &&
-          data["+clicked_branch_link"] == true) {
+      if (data.containsKey(AppConstants.clickedBranchLink) &&
+          data[AppConstants.clickedBranchLink] == true) {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => NextScreen(
-                      customString: data["custom_string"],
+                      customString: data[AppConstants.deepLinkTitle],
                     )));
       }
-    }, onError: print);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: Center(
-        child: FlatButton(
-          onPressed: () {
-            _generateDeepLink();
-          },
-          child: Text("Branch Io"),
-        ),
-      ),
-    ));
-  }
-
-  @override
-  void onDetached() {
-    // TODO: implement onDetached
-  }
-
-  @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
-
-  @override
-  void onPaused() {
-    // TODO: implement onPaused
-  }
-
-  @override
-  void onResumed() {
-    // TODO: implement onResumed
-    Future.delayed(Duration.zero, () {
-      listenDeepLink(context);
+    }, onError: (error) {
+      PlatformException platformException = error as PlatformException;
+      ConsoleLogUtils.printLog(
+          '${platformException.code} - ${platformException.message}');
     });
+  }
+
+  //To Setup Data For Generation Of Deep Link
+  void initializeDeepLinkData() {
+    buo = BranchUniversalObject(
+      canonicalIdentifier: AppConstants.branchIoCanonicalIdentifier,
+      contentMetadata: BranchContentMetaData()
+        ..addCustomMetadata(
+            AppConstants.deepLinkTitle, AppConstants.deepLinkData),
+    );
+    FlutterBranchSdk.registerView(buo: buo);
+
+    lp = BranchLinkProperties();
+    lp.addControlParam(AppConstants.controlParamsKey, '1');
+  }
+
+  //To Generate Deep Link For Branch Io
+  void _generateDeepLink(BuildContext context) async {
+    BranchResponse response =
+        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+    if (response.success) {
+      print(response.result);
+      ToastUtils.displayToast("${response.result}");
+    } else {
+      ConsoleLogUtils.printLog(
+          '${response.errorCode} - ${response.errorMessage}');
+    }
   }
 }

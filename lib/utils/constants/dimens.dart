@@ -1,6 +1,4 @@
-// Spacing Constant
-const spacingSmall = 10.0;
-
 // Font Size Constant
-const fontLarger = 18.0;
-const fontXLarge = 20.0;
+const labelFontSize = 14.0;
+const headerFontSize = 18.0;
+const descriptionFontSize = 25.0;
