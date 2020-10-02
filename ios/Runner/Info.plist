@@ -41,5 +41,22 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleTypeRole</key>
+     <string>Editor</string>
+     <key>CFBundleURLName</key>
+     <string>Your Bundle Id</string>
+     <key>CFBundleURLSchemes</key>
+     <array>
+     <string>Your URL Scheme</string>
+     </array>
+     <key>branch_key</key>
+     <string>Your branch IO test key or live key</string>
+     <key>branch_universal_link_domains</key>
+     <array>
+            <string>Your domain link</string>
+            <string>Your alternate domain link</string>
+     </array>
+     <key>io.flutter.embedded_views_preview</key>
+     <string>Yes</string>
 </dict>
 </plist>
