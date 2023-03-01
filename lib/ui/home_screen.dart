@@ -14,12 +14,12 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-StreamSubscription<Map> streamSubscriptionDeepLink;
+StreamSubscription<Map>? streamSubscriptionDeepLink;
 
 class _HomeScreenState extends State<HomeScreen> {
-  BranchUniversalObject buo;
-  BranchLinkProperties lp;
-  BranchResponse response;
+  BranchUniversalObject? buo;
+  BranchLinkProperties? lp;
+  BranchResponse? response;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    streamSubscriptionDeepLink.cancel();
+    streamSubscriptionDeepLink?.cancel();
   }
 
   @override
@@ -46,8 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: SafeArea(
           child: Center(
-            child: RaisedButton(
-              color: Colors.blue,
+            child: ElevatedButton(
               onPressed: () {
                 _generateDeepLink(context);
               },
@@ -87,16 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
         ..addCustomMetadata(
             AppConstants.deepLinkTitle, AppConstants.deepLinkData),
     );
-    FlutterBranchSdk.registerView(buo: buo);
+    FlutterBranchSdk.registerView(buo: buo!);
 
     lp = BranchLinkProperties();
-    lp.addControlParam(AppConstants.controlParamsKey, '1');
+    lp?.addControlParam(AppConstants.controlParamsKey, '1');
   }
 
   //To Generate Deep Link For Branch Io
   void _generateDeepLink(BuildContext context) async {
     BranchResponse response =
-        await FlutterBranchSdk.getShortUrl(buo: buo, linkProperties: lp);
+        await FlutterBranchSdk.getShortUrl(buo: buo!, linkProperties: lp!);
     if (response.success) {
       print(response.result);
       ToastUtils.displayToast("${response.result}");

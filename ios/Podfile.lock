@@ -1,0 +1,39 @@
+PODS:
+  - BranchSDK (2.0.0)
+  - Flutter (1.0.0)
+  - flutter_branch_sdk (6.4.0):
+    - BranchSDK (~> 2.0.0)
+    - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
+  - Toast (4.0.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_branch_sdk (from `.symlinks/plugins/flutter_branch_sdk/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+
+SPEC REPOS:
+  trunk:
+    - BranchSDK
+    - Toast
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_branch_sdk:
+    :path: ".symlinks/plugins/flutter_branch_sdk/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+
+SPEC CHECKSUMS:
+  BranchSDK: dbecf9d1da931c2cf57393b233347b3587d11acb
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_branch_sdk: 193591ad0c4938b925c9068aff19584236c3cf8f
+  fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+
+PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+
+COCOAPODS: 1.11.3

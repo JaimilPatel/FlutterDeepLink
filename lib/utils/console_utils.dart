@@ -1,5 +1,5 @@
 class ConsoleLogUtils {
-  static Function printLog(dynamic printMessage) {
+  static void printLog(dynamic printMessage) {
     print(printMessage);
   }
 }

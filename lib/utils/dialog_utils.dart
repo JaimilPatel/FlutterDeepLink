@@ -5,7 +5,7 @@ import 'constants/dimens.dart';
 
 class ToastUtils {
   //To Display Toast
-  static Future<bool> displayToast(String message) {
+  static Future<bool?> displayToast(String message) {
     return Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,

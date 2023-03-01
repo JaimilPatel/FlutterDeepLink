@@ -3,7 +3,7 @@ import 'package:flutterdeeplink/utils/constants/app_constants.dart';
 import 'package:flutterdeeplink/utils/constants/dimens.dart';
 
 class NextScreen extends StatefulWidget {
-  final String customString;
+  final String? customString;
   NextScreen({this.customString});
   @override
   _NextScreenState createState() => _NextScreenState();
